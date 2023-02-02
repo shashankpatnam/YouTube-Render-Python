@@ -17,4 +17,4 @@ uvicorn
 uvloop
 httptools
 xgboost
-sklearn
+
