@@ -17,7 +17,7 @@ class model(BaseModel):
     Trihalomethanes: float
     Turbidity: float
 
-pickle_in = open("C:/Users/admin/proj/classifier.pkl", "rb")
+pickle_in = open("classifier.pkl", "rb")
 cls = pickle.load(pickle_in)
 
 myApp = FastAPI()
@@ -40,4 +40,5 @@ def getStudent(quer : model):
         return "Safe to drink"
     else:
         return "Unsafe to drink"
-
+    
+uvicorn.run(myApp)
