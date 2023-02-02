@@ -1,10 +1,43 @@
-from flask import Flask
+from fastapi import FastAPI
+import uvicorn
+from pydantic import BaseModel
+import pickle
+import numpy
+import pandas
+import gunicorn
 
-app = Flask(__name__)
+class model(BaseModel):
+    ph: float
+    Hardness: float
+    Solids: float
+    Chloramines: float
+    Sulfate: float
+    Conductivity: float
+    Organic_carbon: float
+    Trihalomethanes: float
+    Turbidity: float
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
+pickle_in = open("C:/Users/admin/proj/classifier.pkl", "rb")
+cls = pickle.load(pickle_in)
 
-if __name__ == '__main__':
-    app.run()
+myApp = FastAPI()
+
+@myApp.get("/")
+def homeFunction():
+    return "Hello"
+
+@myApp.post("/water_quality")
+def getStudent(quer : model):
+    query = quer.dict()
+    parameters = [[query['ph'],query['Hardness'],query['Solids'],query['Chloramines'],query['Sulfate'],query['Conductivity'],query['Organic_carbon'],query['Trihalomethanes'],query['Turbidity']]]
+    arr = numpy.array(parameters, dtype=float)
+    columns = []
+    for i in query.keys():
+        columns.append(i)
+    df = pandas.DataFrame(arr, columns=columns)
+    output = cls.predict(df)
+    if(output[0]==1):
+        return "Safe to drink"
+    else:
+        return "Unsafe to drink"
+
