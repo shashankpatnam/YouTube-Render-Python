@@ -41,4 +41,3 @@ def getStudent(quer : model):
     else:
         return "Unsafe to drink"
     
-uvicorn.run(myApp)
